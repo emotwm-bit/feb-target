@@ -1,0 +1,1206 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💰 1月獎金查詢 - 倚盟電訊</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft JhengHei', sans-serif;
+            background: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 50%, #16213e 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* 金幣飄落動畫 */
+        .coin {
+            position: fixed;
+            font-size: 24px;
+            animation: coinFall linear forwards;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        @keyframes coinFall {
+            0% { transform: translateY(-50px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+
+        .container {
+            max-width: 520px;
+            margin: 0 auto;
+            padding: 15px;
+            position: relative;
+        }
+
+        /* 標題區 */
+        .header {
+            text-align: center;
+            padding: 25px 20px;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.6em;
+            color: #fff;
+            text-shadow: 
+                0 0 10px #ffd700,
+                0 0 20px #ffd700,
+                0 0 40px #ff6b00;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 10px #ffd700, 0 0 20px #ffd700; }
+            to { text-shadow: 0 0 20px #ffd700, 0 0 40px #ffd700, 0 0 60px #ff6b00; }
+        }
+
+        .header p {
+            color: #888;
+            margin-top: 8px;
+            font-size: 0.85em;
+        }
+
+        /* Tab 切換 */
+        .tab-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid rgba(255,215,0,0.3);
+            border-radius: 12px;
+            background: rgba(0,0,0,0.3);
+            color: #888;
+            font-size: 0.95em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .tab-btn:hover {
+            border-color: rgba(255,215,0,0.5);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #ffd700, #ff6b00);
+            color: #000;
+            border-color: transparent;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 選擇區 */
+        .select-area {
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255,215,0,0.2);
+        }
+
+        .select-row {
+            display: flex;
+            gap: 12px;
+        }
+
+        .select-group {
+            flex: 1;
+        }
+
+        .select-group label {
+            display: block;
+            color: #ffd700;
+            font-size: 0.8em;
+            margin-bottom: 6px;
+            font-weight: bold;
+        }
+
+        .select-group select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid rgba(255,215,0,0.3);
+            border-radius: 10px;
+            background: rgba(0,0,0,0.5);
+            color: #fff;
+            font-size: 0.95em;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .select-group select:focus {
+            outline: none;
+            border-color: #ffd700;
+            box-shadow: 0 0 15px rgba(255,215,0,0.3);
+        }
+
+        /* 排行榜 */
+        .leaderboard {
+            background: rgba(255,255,255,0.03);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid rgba(255,215,0,0.2);
+        }
+
+        .leaderboard-header {
+            background: linear-gradient(135deg, #ffd700, #ff6b00);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .leaderboard-header h3 {
+            color: #000;
+            font-size: 1.1em;
+        }
+
+        .leaderboard-header .total {
+            color: #000;
+            font-size: 0.85em;
+            opacity: 0.8;
+        }
+
+        .rank-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            transition: all 0.3s;
+        }
+
+        .rank-item:hover {
+            background: rgba(255,215,0,0.1);
+        }
+
+        .rank-item.top1 {
+            background: linear-gradient(90deg, rgba(255,215,0,0.2), transparent);
+        }
+
+        .rank-item.top2 {
+            background: linear-gradient(90deg, rgba(192,192,192,0.15), transparent);
+        }
+
+        .rank-item.top3 {
+            background: linear-gradient(90deg, rgba(205,127,50,0.15), transparent);
+        }
+
+        .rank-number {
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-right: 12px;
+        }
+
+        .rank-number.medal {
+            font-size: 1.5em;
+        }
+
+        .rank-number:not(.medal) {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .rank-info {
+            flex: 1;
+        }
+
+        .rank-name {
+            color: #fff;
+            font-weight: bold;
+            font-size: 0.95em;
+        }
+
+        .rank-store {
+            color: #888;
+            font-size: 0.75em;
+            margin-top: 2px;
+        }
+
+        .rank-amount {
+            text-align: right;
+        }
+
+        .rank-amount .value {
+            color: #4ade80;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+
+        .rank-amount .value.negative {
+            color: #f87171;
+        }
+
+        .rank-amount .label {
+            color: #666;
+            font-size: 0.7em;
+        }
+
+        /* 項目冠軍區 */
+        .champions-section {
+            margin-top: 20px;
+        }
+
+        .champions-title {
+            color: #ffd700;
+            font-size: 1em;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .champions-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .champion-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            padding: 12px;
+            border: 1px solid rgba(255,215,0,0.15);
+            transition: all 0.3s;
+        }
+
+        .champion-card:hover {
+            border-color: rgba(255,215,0,0.4);
+            transform: translateY(-2px);
+        }
+
+        .champion-card .category {
+            color: #888;
+            font-size: 0.75em;
+            margin-bottom: 6px;
+        }
+
+        .champion-card .winner {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .champion-card .winner .medal {
+            font-size: 1.2em;
+        }
+
+        .champion-card .winner .name {
+            color: #fff;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .champion-card .amount {
+            color: #4ade80;
+            font-size: 0.85em;
+            margin-top: 4px;
+        }
+
+        /* 等待畫面 */
+        .waiting {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .waiting .icon {
+            font-size: 4em;
+            animation: bounce 1s ease infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        .waiting h3 {
+            color: #ffd700;
+            margin-top: 15px;
+            font-size: 1.2em;
+        }
+
+        .waiting p {
+            color: #666;
+            margin-top: 8px;
+            font-size: 0.9em;
+        }
+
+        /* 結果卡片 */
+        .result-card {
+            display: none;
+        }
+
+        .result-card.active {
+            display: block;
+            animation: slideUp 0.5s ease;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 員工名片 */
+        .profile-card {
+            background: linear-gradient(135deg, #1a1a2e, #2d2d44);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(255,215,0,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .profile-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,215,0,0.1), transparent);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) rotate(45deg); }
+        }
+
+        .profile-row {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #ffd700, #ff6b00);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            color: #000;
+            font-weight: bold;
+            box-shadow: 0 0 20px rgba(255,215,0,0.5);
+        }
+
+        .profile-info h2 {
+            color: #fff;
+            font-size: 1.4em;
+            margin-bottom: 6px;
+        }
+
+        .profile-badges {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            padding: 3px 10px;
+            border-radius: 15px;
+            font-size: 0.7em;
+            font-weight: bold;
+        }
+
+        .badge.store {
+            background: rgba(100,149,237,0.3);
+            color: #87ceeb;
+            border: 1px solid rgba(100,149,237,0.5);
+        }
+
+        .badge.rank {
+            background: rgba(255,215,0,0.2);
+            color: #ffd700;
+            border: 1px solid rgba(255,215,0,0.5);
+        }
+
+        /* 總獎金 */
+        .total-bonus-card {
+            background: linear-gradient(135deg, #ffd700 0%, #ff6b00 50%, #ff4444 100%);
+            border-radius: 20px;
+            padding: 25px 20px;
+            text-align: center;
+            margin-bottom: 15px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 
+                0 8px 30px rgba(255,107,0,0.4),
+                inset 0 0 50px rgba(255,255,255,0.2);
+        }
+
+        .total-bonus-card::before {
+            content: '💰';
+            position: absolute;
+            font-size: 6em;
+            opacity: 0.1;
+            top: -15px;
+            right: -15px;
+        }
+
+        .total-bonus-card .label {
+            color: rgba(0,0,0,0.7);
+            font-size: 0.9em;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .total-bonus-card .amount {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.8em;
+            color: #000;
+            text-shadow: 2px 2px 0 rgba(255,255,255,0.3);
+            position: relative;
+            z-index: 1;
+        }
+
+        .total-bonus-card .amount.negative {
+            color: #8b0000;
+        }
+
+        .total-bonus-card .rank-badge {
+            display: inline-block;
+            margin-top: 12px;
+            padding: 6px 20px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 25px;
+            color: #fff;
+            font-weight: bold;
+            font-size: 1em;
+        }
+
+        /* 排名區 */
+        .ranking-card {
+            background: linear-gradient(135deg, #2d2d44, #1a1a2e);
+            border-radius: 16px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(255,215,0,0.2);
+            display: flex;
+            justify-content: space-around;
+            text-align: center;
+        }
+
+        .ranking-item {
+            flex: 1;
+        }
+
+        .ranking-item .medal {
+            font-size: 2em;
+            margin-bottom: 3px;
+        }
+
+        .ranking-item .number {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.6em;
+            color: #ffd700;
+        }
+
+        .ranking-item .label {
+            color: #888;
+            font-size: 0.7em;
+            margin-top: 3px;
+        }
+
+        /* 成就徽章 */
+        .achievement-section {
+            background: rgba(0,0,0,0.3);
+            border-radius: 16px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(255,215,0,0.2);
+        }
+
+        .achievement-title {
+            color: #ffd700;
+            font-size: 0.9em;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .achievement-grid {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .achievement {
+            padding: 8px 12px;
+            border-radius: 25px;
+            font-size: 0.8em;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            animation: popIn 0.4s ease backwards;
+        }
+
+        @keyframes popIn {
+            from { transform: scale(0); }
+            to { transform: scale(1); }
+        }
+
+        .achievement.gold {
+            background: linear-gradient(135deg, #ffd700, #ffaa00);
+            color: #000;
+            box-shadow: 0 0 15px rgba(255,215,0,0.5);
+        }
+
+        .achievement.silver {
+            background: linear-gradient(135deg, #c0c0c0, #a0a0a0);
+            color: #000;
+        }
+
+        .achievement.bronze {
+            background: linear-gradient(135deg, #cd7f32, #8b4513);
+            color: #fff;
+        }
+
+        .achievement.special {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a5a);
+            color: #fff;
+            animation: pulse 1.5s ease infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 8px rgba(255,107,107,0.5); }
+            50% { box-shadow: 0 0 20px rgba(255,107,107,0.8); }
+        }
+
+        /* 獎金詳情 */
+        .bonus-detail-section {
+            background: rgba(255,255,255,0.03);
+            border-radius: 16px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .section-title {
+            color: #ffd700;
+            font-size: 0.9em;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(255,215,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .bonus-list {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+
+        .bonus-item {
+            background: rgba(0,0,0,0.3);
+            border-radius: 10px;
+            padding: 10px 6px;
+            text-align: center;
+            transition: all 0.3s;
+            border: 1px solid transparent;
+        }
+
+        .bonus-item:hover {
+            border-color: rgba(255,215,0,0.5);
+            transform: translateY(-2px);
+        }
+
+        .bonus-item .name {
+            color: #888;
+            font-size: 0.65em;
+            margin-bottom: 4px;
+        }
+
+        .bonus-item .value {
+            color: #4ade80;
+            font-size: 1em;
+            font-weight: bold;
+        }
+
+        .bonus-item .value.zero {
+            color: #666;
+        }
+
+        /* 小計條 */
+        .subtotal-bar {
+            background: linear-gradient(90deg, #4ade80, #22c55e);
+            border-radius: 10px;
+            padding: 12px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 12px;
+        }
+
+        .subtotal-bar .label {
+            color: #000;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .subtotal-bar .value {
+            font-family: 'Orbitron', sans-serif;
+            color: #000;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        /* 全壘打區 */
+        .homerun-section {
+            background: linear-gradient(135deg, #1a1a2e, #2d1f3d);
+            border-radius: 16px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 2px solid #9333ea;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .homerun-section::before {
+            content: '⚾';
+            position: absolute;
+            font-size: 5em;
+            opacity: 0.1;
+            bottom: -15px;
+            right: -8px;
+        }
+
+        .homerun-title {
+            color: #a855f7;
+            font-size: 1em;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .homerun-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .homerun-item {
+            text-align: center;
+            padding: 12px 8px;
+            background: rgba(147,51,234,0.2);
+            border-radius: 12px;
+        }
+
+        .homerun-item .label {
+            color: #a855f7;
+            font-size: 0.7em;
+            margin-bottom: 6px;
+        }
+
+        .homerun-item .value {
+            font-family: 'Orbitron', sans-serif;
+            color: #fff;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        .homerun-item .value.negative {
+            color: #f87171;
+        }
+
+        /* 毛利分潤 */
+        .profit-section {
+            background: linear-gradient(135deg, #065f46, #047857);
+            border-radius: 16px;
+            padding: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .profit-section .label {
+            color: rgba(255,255,255,0.8);
+            font-size: 0.95em;
+        }
+
+        .profit-section .value {
+            font-family: 'Orbitron', sans-serif;
+            color: #4ade80;
+            font-size: 1.5em;
+            font-weight: bold;
+            text-shadow: 0 0 15px rgba(74,222,128,0.5);
+        }
+
+        /* 頁尾 */
+        .footer {
+            text-align: center;
+            padding: 25px 20px;
+            color: #555;
+            font-size: 0.75em;
+        }
+
+        @media (max-width: 400px) {
+            .total-bonus-card .amount {
+                font-size: 2.2em;
+            }
+            .bonus-list {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .select-row {
+                flex-direction: column;
+            }
+            .champions-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💰 獎金查詢</h1>
+            <p>倚盟電訊｜2025年1月（截至1/29）</p>
+        </div>
+
+        <!-- Tab 切換 -->
+        <div class="tab-container">
+            <button class="tab-btn active" onclick="switchTab('personal')">👤 個人查詢</button>
+            <button class="tab-btn" onclick="switchTab('ranking')">🏆 排行榜</button>
+        </div>
+
+        <!-- 個人查詢 Tab -->
+        <div class="tab-content active" id="personalTab">
+            <div class="select-area">
+                <div class="select-row">
+                    <div class="select-group">
+                        <label>🏪 店點</label>
+                        <select id="storeSelect" onchange="updateEmployeeList()">
+                            <option value="">選擇店點</option>
+                        </select>
+                    </div>
+                    <div class="select-group">
+                        <label>👤 員工</label>
+                        <select id="employeeSelect" onchange="showResult()">
+                            <option value="">選擇員工</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="waiting" id="waiting">
+                <div class="icon">💸</div>
+                <h3>查詢你的獎金</h3>
+                <p>選擇店點和姓名開始</p>
+            </div>
+
+            <div class="result-card" id="resultCard">
+                <!-- 動態內容 -->
+            </div>
+        </div>
+
+        <!-- 排行榜 Tab -->
+        <div class="tab-content" id="rankingTab">
+            <div class="leaderboard">
+                <div class="leaderboard-header">
+                    <h3>🏆 總獎金排行榜</h3>
+                    <span class="total">共19人</span>
+                </div>
+                <div id="rankingList">
+                    <!-- 動態生成 -->
+                </div>
+            </div>
+
+            <div class="champions-section">
+                <div class="champions-title">👑 各項目冠軍</div>
+                <div class="champions-grid" id="championsGrid">
+                    <!-- 動態生成 -->
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>© 2025 倚盟電訊 | 數據截至 1/29，最終以實際發放為準</p>
+        </div>
+    </div>
+
+    <script>
+        // 完整獎金數據
+        const employeeData = [
+            { 店點: "後昌店", 姓名: "邱雨蔚", 職級: "銅級", AQ: 5750, AQ999: 1200, RT升轉: 1900, RT999: 2000, RT1399: 1100, 特維: 1500, 手機台獎: 7400, 寬頻: 0, OP: 500, 基礎獎金: 21350, 毛利分潤: 9995, 全壘打分數: 18, 全壘打獎金: 12000, KPI淨獎金: 3000, 總獎金: 46345, 排名: 1 },
+            { 店點: "凱旋店", 姓名: "高琦茗", 職級: "銅級", AQ: 4700, AQ999: 600, RT升轉: 1800, RT999: 1800, RT1399: 1300, 特維: 1300, 手機台獎: 4600, 寬頻: 3625, OP: 1000, 基礎獎金: 20725, 毛利分潤: 5320, 全壘打分數: 19, 全壘打獎金: 13000, KPI淨獎金: -500, 總獎金: 38545, 排名: 2 },
+            { 店點: "後昌店", 姓名: "黃庭鈞", 職級: "黃金級", AQ: 4300, AQ999: 900, RT升轉: 2000, RT999: 2200, RT1399: 1700, 特維: 600, 手機台獎: 5400, 寬頻: 2375, OP: 0, 基礎獎金: 19475, 毛利分潤: 11293, 全壘打分數: 13, 全壘打獎金: 7300, KPI淨獎金: 0, 總獎金: 38068, 排名: 3 },
+            { 店點: "陽明店", 姓名: "劉芳廷", 職級: "銀級", AQ: 3050, AQ999: 300, RT升轉: 2100, RT999: 1500, RT1399: 900, 特維: 2000, 手機台獎: 5600, 寬頻: 0, OP: 0, 基礎獎金: 15450, 毛利分潤: 10551, 全壘打分數: 10.5, 全壘打獎金: 5200, KPI淨獎金: 1500, 總獎金: 32701, 排名: 4 },
+            { 店點: "凱旋店", 姓名: "陳宛姍", 職級: "白金級", AQ: 1500, AQ999: 0, RT升轉: 2000, RT999: 2400, RT1399: 1200, 特維: 800, 手機台獎: 6200, 寬頻: 1500, OP: 0, 基礎獎金: 15600, 毛利分潤: 11201, 全壘打分數: 11, 全壘打獎金: 5900, KPI淨獎金: -500, 總獎金: 32201, 排名: 5 },
+            { 店點: "仁雄店", 姓名: "黃閔聖", 職級: "銀級", AQ: 4100, AQ999: 900, RT升轉: 1300, RT999: 2300, RT1399: 1000, 特維: 900, 手機台獎: 7200, 寬頻: 3250, OP: 0, 基礎獎金: 20950, 毛利分潤: 5185, 全壘打分數: 8, 全壘打獎金: 4000, KPI淨獎金: 1500, 總獎金: 31635, 排名: 6 },
+            { 店點: "陽明店", 姓名: "方若帆", 職級: "金級", AQ: 2600, AQ999: 0, RT升轉: 2700, RT999: 2100, RT1399: 1200, 特維: 1900, 手機台獎: 5200, 寬頻: 750, OP: 0, 基礎獎金: 16450, 毛利分潤: 6388, 全壘打分數: 14, 全壘打獎金: 8000, KPI淨獎金: -1000, 總獎金: 29838, 排名: 7 },
+            { 店點: "鼎山店", 姓名: "陳亭安", 職級: "銅級", AQ: 4970, AQ999: 600, RT升轉: 2500, RT999: 1600, RT1399: 1200, 特維: 600, 手機台獎: 5400, 寬頻: 750, OP: 0, 基礎獎金: 17620, 毛利分潤: 3000, 全壘打分數: 10, 全壘打獎金: 5200, KPI淨獎金: 500, 總獎金: 26320, 排名: 8 },
+            { 店點: "仁雄店", 姓名: "郭紳鴻", 職級: "石頭", AQ: 0, AQ999: 0, RT升轉: 1100, RT999: 2300, RT1399: 1300, 特維: 1100, 手機台獎: 6800, 寬頻: 3875, OP: 500, 基礎獎金: 16975, 毛利分潤: 4059, 全壘打分數: 8, 全壘打獎金: 4000, KPI淨獎金: -1000, 總獎金: 24034, 排名: 9 },
+            { 店點: "仁雄店", 姓名: "黃傑稜", 職級: "金級", AQ: 1300, AQ999: 300, RT升轉: 1900, RT999: 2100, RT1399: 1500, 特維: 1500, 手機台獎: 3000, 寬頻: 875, OP: 0, 基礎獎金: 12475, 毛利分潤: 6525, 全壘打分數: 13, 全壘打獎金: 7300, KPI淨獎金: -4000, 總獎金: 22300, 排名: 10 },
+            { 店點: "凱旋店", 姓名: "石佳穎", 職級: "銅級", AQ: 0, AQ999: 0, RT升轉: 1700, RT999: 1800, RT1399: 600, 特維: 700, 手機台獎: 5300, 寬頻: 750, OP: 500, 基礎獎金: 11350, 毛利分潤: 4614, 全壘打分數: 9.5, 全壘打獎金: 4500, KPI淨獎金: 500, 總獎金: 20964, 排名: 11 },
+            { 店點: "陽明店", 姓名: "林瑞獻", 職級: "石頭", AQ: 950, AQ999: 0, RT升轉: 1400, RT999: 800, RT1399: 600, 特維: 2000, 手機台獎: 4000, 寬頻: 625, OP: 0, 基礎獎金: 10375, 毛利分潤: 0, 全壘打分數: 15, 全壘打獎金: 9000, KPI淨獎金: 1500, 總獎金: 20875, 排名: 12 },
+            { 店點: "後昌店", 姓名: "郭家維", 職級: "銅級", AQ: 1500, AQ999: 600, RT升轉: 1500, RT999: 1800, RT1399: 1000, 特維: 1100, 手機台獎: 5100, 寬頻: 0, OP: 0, 基礎獎金: 12600, 毛利分潤: 3000, 全壘打分數: 4.5, 全壘打獎金: 2000, KPI淨獎金: -1500, 總獎金: 16100, 排名: 13 },
+            { 店點: "鼎山店", 姓名: "劉家妘", 職級: "白金級", AQ: 1350, AQ999: 300, RT升轉: 700, RT999: 1000, RT1399: 700, 特維: 900, 手機台獎: 3800, 寬頻: 1500, OP: 0, 基礎獎金: 10250, 毛利分潤: 5501, 全壘打分數: 5, 全壘打獎金: 2500, KPI淨獎金: -2500, 總獎金: 15751, 排名: 14 },
+            { 店點: "後昌店", 姓名: "秦曼芯", 職級: "石頭", AQ: 1600, AQ999: 300, RT升轉: 700, RT999: 1100, RT1399: 500, 特維: 1600, 手機台獎: 3600, 寬頻: 375, OP: 0, 基礎獎金: 9775, 毛利分潤: 3000, 全壘打分數: 7, 全壘打獎金: 3500, KPI淨獎金: -1000, 總獎金: 15275, 排名: 15 },
+            { 店點: "凱旋店", 姓名: "林庭逸", 職級: "石頭", AQ: 1700, AQ999: 0, RT升轉: 700, RT999: 900, RT1399: 400, 特維: 700, 手機台獎: 3000, 寬頻: 2250, OP: 0, 基礎獎金: 9650, 毛利分潤: 3000, 全壘打分數: 5, 全壘打獎金: 2500, KPI淨獎金: -1000, 總獎金: 14150, 排名: 16 },
+            { 店點: "鼎山店", 姓名: "黃子珊", 職級: "銀級", AQ: 1250, AQ999: 0, RT升轉: 1600, RT999: 1600, RT1399: 1100, 特維: 1200, 手機台獎: 3800, 寬頻: 0, OP: 0, 基礎獎金: 10550, 毛利分潤: 0, 全壘打分數: 6, 全壘打獎金: 3000, KPI淨獎金: -3000, 總獎金: 10550, 排名: 17 },
+            { 店點: "鼎山店", 姓名: "涂彥州", 職級: "石頭", AQ: 650, AQ999: 300, RT升轉: 1300, RT999: 1100, RT1399: 500, 特維: 1000, 手機台獎: 2900, 寬頻: 500, OP: 0, 基礎獎金: 8250, 毛利分潤: 0, 全壘打分數: 9, 全壘打獎金: 4500, KPI淨獎金: -3500, 總獎金: 9250, 排名: 18 },
+            { 店點: "仁雄店", 姓名: "蔡冠廷", 職級: "石頭", AQ: 2400, AQ999: 600, RT升轉: 0, RT999: 0, RT1399: 0, 特維: 0, 手機台獎: 1700, 寬頻: 0, OP: 0, 基礎獎金: 4700, 毛利分潤: 0, 全壘打分數: 1, 全壘打獎金: 500, KPI淨獎金: -5500, 總獎金: -300, 排名: 19 }
+        ];
+
+        const totalPeople = 19;
+        const avgBonus = Math.round(employeeData.reduce((sum, e) => sum + e.總獎金, 0) / totalPeople);
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            initStoreSelect();
+            renderRankingList();
+            renderChampions();
+        });
+
+        // Tab 切換
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            if (tab === 'personal') {
+                document.querySelectorAll('.tab-btn')[0].classList.add('active');
+                document.getElementById('personalTab').classList.add('active');
+            } else {
+                document.querySelectorAll('.tab-btn')[1].classList.add('active');
+                document.getElementById('rankingTab').classList.add('active');
+            }
+        }
+
+        // 渲染排行榜
+        function renderRankingList() {
+            const sorted = [...employeeData].sort((a, b) => b.總獎金 - a.總獎金);
+            const container = document.getElementById('rankingList');
+            
+            container.innerHTML = sorted.map((emp, idx) => {
+                const rank = idx + 1;
+                let rankClass = '';
+                let rankDisplay = '';
+                
+                if (rank === 1) {
+                    rankClass = 'top1';
+                    rankDisplay = '<span class="rank-number medal">🥇</span>';
+                } else if (rank === 2) {
+                    rankClass = 'top2';
+                    rankDisplay = '<span class="rank-number medal">🥈</span>';
+                } else if (rank === 3) {
+                    rankClass = 'top3';
+                    rankDisplay = '<span class="rank-number medal">🥉</span>';
+                } else {
+                    rankDisplay = `<span class="rank-number">${rank}</span>`;
+                }
+                
+                return `
+                    <div class="rank-item ${rankClass}">
+                        ${rankDisplay}
+                        <div class="rank-info">
+                            <div class="rank-name">${emp.姓名}</div>
+                            <div class="rank-store">${emp.店點} · ${emp.職級}</div>
+                        </div>
+                        <div class="rank-amount">
+                            <div class="value ${emp.總獎金 < 0 ? 'negative' : ''}">${formatMoney(emp.總獎金)}</div>
+                            <div class="label">總獎金</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // 渲染各項目冠軍
+        function renderChampions() {
+            const categories = [
+                { key: '基礎獎金', icon: '💵', label: '基礎獎金王' },
+                { key: '毛利分潤', icon: '📊', label: '毛利分潤王' },
+                { key: '全壘打分數', icon: '⚾', label: '全壘打王' },
+                { key: '手機台獎', icon: '📱', label: '手機銷售王' },
+                { key: 'AQ', icon: '🎯', label: 'AQ獎金王' },
+                { key: '寬頻', icon: '🌐', label: '寬頻獎金王' },
+            ];
+            
+            const container = document.getElementById('championsGrid');
+            
+            container.innerHTML = categories.map(cat => {
+                const sorted = [...employeeData].sort((a, b) => b[cat.key] - a[cat.key]);
+                const winner = sorted[0];
+                
+                return `
+                    <div class="champion-card">
+                        <div class="category">${cat.label}</div>
+                        <div class="winner">
+                            <span class="medal">🏆</span>
+                            <span class="name">${winner.姓名}</span>
+                        </div>
+                        <div class="amount">${formatMoney(winner[cat.key])}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function initStoreSelect() {
+            const stores = [...new Set(employeeData.map(e => e.店點))];
+            const order = ['鼎山店', '陽明店', '後昌店', '仁雄店', '凱旋店'];
+            stores.sort((a, b) => order.indexOf(a) - order.indexOf(b));
+            
+            const sel = document.getElementById('storeSelect');
+            sel.innerHTML = '<option value="">選擇店點</option>';
+            stores.forEach(s => {
+                sel.innerHTML += `<option value="${s}">${s}</option>`;
+            });
+        }
+
+        function updateEmployeeList() {
+            const store = document.getElementById('storeSelect').value;
+            const sel = document.getElementById('employeeSelect');
+            sel.innerHTML = '<option value="">選擇員工</option>';
+            
+            if (!store) return;
+            
+            employeeData.filter(e => e.店點 === store).forEach(e => {
+                sel.innerHTML += `<option value="${e.姓名}">${e.姓名}</option>`;
+            });
+        }
+
+        function formatMoney(n) {
+            if (n === 0) return '$0';
+            const abs = Math.abs(n);
+            const formatted = abs >= 1000 ? abs.toLocaleString() : abs;
+            return n < 0 ? `-$${formatted}` : `$${formatted}`;
+        }
+
+        function getRankMedal(rank) {
+            if (rank === 1) return '🥇';
+            if (rank === 2) return '🥈';
+            if (rank === 3) return '🥉';
+            return `#${rank}`;
+        }
+
+        function getRankTitle(rank) {
+            if (rank <= 3) return '🏆 頂尖王者';
+            if (rank <= 6) return '⭐ 超級明星';
+            if (rank <= 10) return '💪 實力選手';
+            if (rank <= 15) return '📈 穩定成長';
+            return '🌱 持續加油';
+        }
+
+        function getAchievements(emp) {
+            const achievements = [];
+            
+            if (emp.排名 === 1) achievements.push({ text: '👑 獎金王', class: 'gold' });
+            if (emp.排名 <= 3) achievements.push({ text: '🏆 TOP 3', class: 'gold' });
+            else if (emp.排名 <= 5) achievements.push({ text: '⭐ TOP 5', class: 'silver' });
+            
+            if (emp.全壘打分數 >= 15) achievements.push({ text: '⚾ 全壘打王', class: 'special' });
+            else if (emp.全壘打分數 >= 10) achievements.push({ text: '⚾ 長打高手', class: 'bronze' });
+            
+            if (emp.總獎金 >= 40000) achievements.push({ text: '💰 4萬俱樂部', class: 'gold' });
+            else if (emp.總獎金 >= 30000) achievements.push({ text: '💵 3萬達成', class: 'silver' });
+            else if (emp.總獎金 >= 20000) achievements.push({ text: '💴 2萬達成', class: 'bronze' });
+            
+            if (emp.AQ >= 4000) achievements.push({ text: '🎯 AQ達人', class: 'bronze' });
+            if (emp.手機台獎 >= 6000) achievements.push({ text: '📱 手機王', class: 'bronze' });
+            if (emp.毛利分潤 >= 10000) achievements.push({ text: '📊 毛利高手', class: 'silver' });
+            
+            return achievements;
+        }
+
+        function createCoins() {
+            const emojis = ['💰', '💵', '💴', '🪙', '✨'];
+            for (let i = 0; i < 12; i++) {
+                setTimeout(() => {
+                    const coin = document.createElement('div');
+                    coin.className = 'coin';
+                    coin.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                    coin.style.left = Math.random() * 100 + 'vw';
+                    coin.style.animationDuration = (2 + Math.random() * 2) + 's';
+                    document.body.appendChild(coin);
+                    setTimeout(() => coin.remove(), 4000);
+                }, i * 80);
+            }
+        }
+
+        function showResult() {
+            const store = document.getElementById('storeSelect').value;
+            const name = document.getElementById('employeeSelect').value;
+            
+            if (!name) {
+                document.getElementById('waiting').style.display = 'block';
+                document.getElementById('resultCard').classList.remove('active');
+                return;
+            }
+
+            const emp = employeeData.find(e => e.店點 === store && e.姓名 === name);
+            if (!emp) return;
+
+            createCoins();
+            document.getElementById('waiting').style.display = 'none';
+            
+            const achievements = getAchievements(emp);
+            const achievementHTML = achievements.map((a, i) => 
+                `<div class="achievement ${a.class}" style="animation-delay: ${i * 0.1}s">${a.text}</div>`
+            ).join('');
+
+            const beatAvg = emp.總獎金 > avgBonus;
+            const diffAvg = Math.abs(emp.總獎金 - avgBonus);
+
+            document.getElementById('resultCard').innerHTML = `
+                <div class="profile-card">
+                    <div class="profile-row">
+                        <div class="avatar">${emp.姓名.charAt(0)}</div>
+                        <div class="profile-info">
+                            <h2>${emp.姓名}</h2>
+                            <div class="profile-badges">
+                                <span class="badge store">${emp.店點}</span>
+                                <span class="badge rank">${emp.職級}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="total-bonus-card">
+                    <div class="label">💰 1月份累計總獎金</div>
+                    <div class="amount ${emp.總獎金 < 0 ? 'negative' : ''}">${formatMoney(emp.總獎金)}</div>
+                    <div class="rank-badge">${getRankTitle(emp.排名)}</div>
+                </div>
+
+                <div class="ranking-card">
+                    <div class="ranking-item">
+                        <div class="medal">${getRankMedal(emp.排名)}</div>
+                        <div class="number">${emp.排名}</div>
+                        <div class="label">全店排名 / ${totalPeople}人</div>
+                    </div>
+                    <div class="ranking-item">
+                        <div class="medal">${beatAvg ? '📈' : '📉'}</div>
+                        <div class="number" style="color: ${beatAvg ? '#4ade80' : '#f87171'}">${beatAvg ? '+' : '-'}${diffAvg.toLocaleString()}</div>
+                        <div class="label">${beatAvg ? '超越' : '低於'}平均</div>
+                    </div>
+                    <div class="ranking-item">
+                        <div class="medal">⚾</div>
+                        <div class="number">${emp.全壘打分數}</div>
+                        <div class="label">全壘打分數</div>
+                    </div>
+                </div>
+
+                ${achievements.length > 0 ? `
+                <div class="achievement-section">
+                    <div class="achievement-title">🏅 獲得成就</div>
+                    <div class="achievement-grid">${achievementHTML}</div>
+                </div>
+                ` : ''}
+
+                <div class="bonus-detail-section">
+                    <div class="section-title">📋 基礎獎金明細</div>
+                    <div class="bonus-list">
+                        <div class="bonus-item">
+                            <div class="name">AQ點數</div>
+                            <div class="value ${emp.AQ === 0 ? 'zero' : ''}">${formatMoney(emp.AQ)}</div>
+                        </div>
+                        <div class="bonus-item">
+                            <div class="name">AQ999+</div>
+                            <div class="value ${emp.AQ999 === 0 ? 'zero' : ''}">${formatMoney(emp.AQ999)}</div>
+                        </div>
+                        <div class="bonus-item">
+                            <div class="name">RT升轉</div>
+                            <div class="value ${emp.RT升轉 === 0 ? 'zero' : ''}">${formatMoney(emp.RT升轉)}</div>
+                        </div>
+                        <div class="bonus-item">
+                            <div class="name">RT999+</div>
+                            <div class="value ${emp.RT999 === 0 ? 'zero' : ''}">${formatMoney(emp.RT999)}</div>
+                        </div>
+                        <div class="bonus-item">
+                            <div class="name">RT1399+</div>
+                            <div class="value ${emp.RT1399 === 0 ? 'zero' : ''}">${formatMoney(emp.RT1399)}</div>
+                        </div>
+                        <div class="bonus-item">
+                            <div class="name">特維</div>
+                            <div class="value ${emp.特維 === 0 ? 'zero' : ''}">${formatMoney(emp.特維)}</div>
+                        </div>
+                        <div class="bonus-item">
+                            <div class="name">手機台獎</div>
+                            <div class="value ${emp.手機台獎 === 0 ? 'zero' : ''}">${formatMoney(emp.手機台獎)}</div>
+                        </div>
+                        <div class="bonus-item">
+                            <div class="name">寬頻</div>
+                            <div class="value ${emp.寬頻 === 0 ? 'zero' : ''}">${formatMoney(emp.寬頻)}</div>
+                        </div>
+                        <div class="bonus-item">
+                            <div class="name">OP案</div>
+                            <div class="value ${emp.OP === 0 ? 'zero' : ''}">${formatMoney(emp.OP)}</div>
+                        </div>
+                    </div>
+                    <div class="subtotal-bar">
+                        <span class="label">基礎獎金小計</span>
+                        <span class="value">${formatMoney(emp.基礎獎金)}</span>
+                    </div>
+                </div>
+
+                <div class="profit-section">
+                    <div class="label">📈 毛利分潤獎金</div>
+                    <div class="value">${formatMoney(emp.毛利分潤)}</div>
+                </div>
+
+                <div class="homerun-section">
+                    <div class="homerun-title">⚾ 全壘打獎金</div>
+                    <div class="homerun-grid">
+                        <div class="homerun-item">
+                            <div class="label">得分</div>
+                            <div class="value">${emp.全壘打分數}</div>
+                        </div>
+                        <div class="homerun-item">
+                            <div class="label">全壘打獎金</div>
+                            <div class="value">${formatMoney(emp.全壘打獎金)}</div>
+                        </div>
+                        <div class="homerun-item">
+                            <div class="label">KPI淨獎金</div>
+                            <div class="value ${emp.KPI淨獎金 < 0 ? 'negative' : ''}">${formatMoney(emp.KPI淨獎金)}</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('resultCard').classList.add('active');
+        }
+    </script>
+</body>
+</html>
